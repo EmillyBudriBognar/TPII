@@ -1,3 +1,12 @@
+/**
+ * PADRÃO: BUILDER
+ * 
+ * Exercício: Sistema de Gerenciamento de Perfis.
+ * O Builder permite que o Perfil seja construído de forma flexível, 
+ * facilitando a adição de novos campos ou a omissão de campos opcionais.
+ */
+
+// 1. PRODUTO FINAL
 class Perfil {
     constructor() {
         this.nome = "";
@@ -12,6 +21,7 @@ class Perfil {
     }
 }
 
+// 2. BUILDER CONCRETO
 class PerfilBuilder {
     constructor() {
         this.perfil = new Perfil();
@@ -42,12 +52,13 @@ class PerfilBuilder {
         return this;
     }
 
+    // 3. MÉTODO DE CONSTRUÇÃO
     construir() {
         return this.perfil;
     }
 }
 
-// CLIENTE
+// 4. CLIENTE
 const p1 = new PerfilBuilder()
     .addNome("Ricardo Souza")
     .addCargo("Administrativo")
@@ -56,4 +67,11 @@ const p1 = new PerfilBuilder()
     .addHoraSaida("18:00")
     .construir();
 
-console.log(p1.toString());
+const p2 = new PerfilBuilder()
+    .addNome("Fernanda Lima")
+    .addCargo("Coordenadora")
+    .addMatricula(112233)
+    .construir(); // Campos de horário omitidos
+
+console.log("Perfil 1:", p1.toString());
+console.log("Perfil 2:", p2.toString());

@@ -1,6 +1,14 @@
+/**
+ * PADRÃO: BUILDER
+ * 
+ * Exercício: Sistema de Gerenciamento de Perfis.
+ * O padrão Builder é ideal para objetos que podem ter muitos campos 
+ * opcionais ou configurações variadas, como um Perfil de usuário.
+ */
+
 import java.time.LocalTime;
 
-// PRODUTO
+// 1. PRODUTO FINAL
 class Perfil {
     private String nome;
     private String cargo;
@@ -21,7 +29,7 @@ class Perfil {
     }
 }
 
-// BUILDER
+// 2. BUILDER CONCRETO
 class PerfilBuilder {
     private Perfil perfil = new Perfil();
 
@@ -55,9 +63,10 @@ class PerfilBuilder {
     }
 }
 
-// CLIENTE
+// 3. CLIENTE
 public class Ex2 {
     public static void main(String[] args) {
+        // Criando o Perfil de um Professor
         Perfil p1 = new PerfilBuilder()
             .addNome("João Silva")
             .addCargo("Professor")
@@ -66,6 +75,7 @@ public class Ex2 {
             .addHoraSaida(LocalTime.of(17, 0))
             .construir();
 
+        // Criando o Perfil de um Aluno
         Perfil p2 = new PerfilBuilder()
             .addNome("Maria Oliveira")
             .addCargo("Aluno")

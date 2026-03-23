@@ -1,5 +1,14 @@
+"""
+PADRÃO: BUILDER
+
+Exercício: Sistema de Gerenciamento de Perfis.
+Este padrão é útil para construir objetos complexos com muitos atributos 
+opcionais, permitindo uma construção clara e legível.
+"""
+
 from datetime import time
 
+# 1. PRODUTO FINAL
 class Perfil:
     def __init__(self):
         self.nome = ""
@@ -11,6 +20,7 @@ class Perfil:
     def __str__(self):
         return f"Perfil [Nome: {self.nome}, Cargo: {self.cargo}, Matrícula: {self.matricula}, Entrada: {self.hora_entrada}, Saída: {self.hora_saida}]"
 
+# 2. BUILDER CONCRETO
 class PerfilBuilder:
     def __init__(self):
         self.perfil = Perfil()
@@ -35,17 +45,27 @@ class PerfilBuilder:
         self.perfil.hora_saida = hora
         return self
 
+    # 3. MÉTODO DE CONSTRUÇÃO FINAL
     def construir(self):
         return self.perfil
 
-# CLIENTE
+# 4. CLIENTE
 if __name__ == "__main__":
-    p1 = PerfilBuilder() \
-        .add_nome("Ana Terra") \
-        .add_cargo("Visitante") \
-        .add_matricula(0) \
-        .add_hora_entrada(time(14, 0)) \
-        .add_hora_saida(time(16, 0)) \
-        .construir()
+    # Perfil completo
+    p1 = (PerfilBuilder() 
+          .add_nome("Ana Terra") 
+          .add_cargo("Visitante") 
+          .add_matricula(0) 
+          .add_hora_entrada(time(14, 0)) 
+          .add_hora_saida(time(16, 0)) 
+          .construir())
 
-    print(p1)
+    # Perfil parcial
+    p2 = (PerfilBuilder()
+          .add_nome("Carlos Magno")
+          .add_cargo("Desenvolvedor")
+          .add_matricula(74282)
+          .construir())
+
+    print(f"Perfil 1: {p1}")
+    print(f"Perfil 2: {p2}")

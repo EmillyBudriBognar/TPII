@@ -1,16 +1,25 @@
+/**
+ * PADRÃO: BUILDER
+ * 
+ * O Builder permite a criação de objetos complexos passo a passo. 
+ * Ele é muito útil para evitar o "telescoping constructor" (muitos parâmetros no construtor).
+ */
+
+// 1. PRODUTO (O objeto que queremos construir)
 class Computador {
     constructor() {
         this.cpu = "";
         this.ram = "";
         this.armazenamento = "";
-        this.placaDeVideo = "Integrada";
+        this.placaDeVideo = "Integrada"; // Valor padrão
     }
 
     toString() {
-        return `Computador [CPU=${this.cpu}, RAM=${this.ram}, Armazenamento=${this.armazenamento}, Placa de Vídeo=${this.placaDeVideo}]`;
+        return `Configuração: [CPU: ${this.cpu}, RAM: ${this.ram}, Armazenamento: ${this.armazenamento}, Placa de Vídeo: ${this.placaDeVideo}]`;
     }
 }
 
+// 2. BUILDER (Encapsula a lógica de construção)
 class ComputadorBuilder {
     constructor() {
         this.computador = new Computador();
@@ -18,7 +27,7 @@ class ComputadorBuilder {
 
     addCPU(cpu) {
         this.computador.cpu = cpu;
-        return this;
+        return this; // Retorna o próprio builder para permitir chamadas encadeadas (Fluent Interface)
     }
 
     addRAM(ram) {
@@ -36,12 +45,13 @@ class ComputadorBuilder {
         return this;
     }
 
+    // 3. MÉTODO DE CONSTRUÇÃO FINAL
     construir() {
         return this.computador;
     }
 }
 
-// CLIENTE
+// 4. CLIENTE (Usa o builder para montar diferentes configurações)
 const gamer = new ComputadorBuilder()
     .addCPU("Ryzen 9")
     .addRAM("64GB")
@@ -49,11 +59,11 @@ const gamer = new ComputadorBuilder()
     .addPlacaDeVideo("RTX 4080")
     .construir();
 
-const basico = new ComputadorBuilder()
-    .addCPU("i3")
+const office = new ComputadorBuilder()
+    .addCPU("Intel i3")
     .addRAM("8GB")
     .addArmazenamento("240GB SSD")
-    .construir();
+    .construir(); // Placa de vídeo ficará com o valor padrão
 
-console.log("Gamer:", gamer.toString());
-console.log("Básico:", basico.toString());
+console.log("PC Gamer: ", gamer.toString());
+console.log("PC Office:", office.toString());

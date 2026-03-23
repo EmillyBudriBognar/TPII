@@ -1,67 +1,79 @@
-// PRODUTO
+/**
+ * PADRÃO: BUILDER
+ * 
+ * O padrão Builder é um padrão criacional que separa a construção de um objeto 
+ * complexo de sua representação, de modo que o mesmo processo de construção 
+ * possa criar diferentes representações.
+ */
+
+// 1. PRODUTO (O objeto complexo que está sendo construído)
 class Computador {
-    private String CPU;
-    private String RAM;
-    private String armazenamento;
-    private String placaDeVideo;
+    String processador;
+    String memoria;
+    String disco;
 
-    public void setCPU(String CPU) { this.CPU = CPU; }
-    public void setRAM(String RAM) { this.RAM = RAM; }
-    public void setArmazenamento(String armazenamento) { this.armazenamento = armazenamento; }
-    public void setPlacaDeVideo(String placaDeVideo) { this.placaDeVideo = placaDeVideo; }
-
-    @Override
-    public String toString() {
-        return "Computador [CPU=" + CPU + ", RAM=" + RAM + ", Armazenamento=" + armazenamento + ", Placa de Vídeo=" + placaDeVideo + "]";
+    void mostrarConfig() {
+        System.out.println("Configuração do Computador:");
+        System.out.println("- Processador: " + processador);
+        System.out.println("- Memória: " + memoria);
+        System.out.println("- Disco: " + disco);
     }
 }
 
-// BUILDER
-class ComputadorBuilder {
+// 2. INTERFACE BUILDER (Define os passos de construção)
+interface ComputadorBuilder {
+    void buildProcessador();
+    void buildMemoria();
+    void buildDisco();
+    Computador getComputador();
+}
+
+// 3. BUILDER CONCRETO - COMPUTADOR GAMER
+class ComputadorGamerBuilder implements ComputadorBuilder {
     private Computador computador = new Computador();
 
-    public ComputadorBuilder addCPU(String cpu) {
-        computador.setCPU(cpu);
-        return this;
-    }
+    public void buildProcessador() { computador.processador = "Intel i9"; }
+    public void buildMemoria() { computador.memoria = "32GB RAM"; }
+    public void buildDisco() { computador.disco = "1TB SSD NVMe"; }
+    public Computador getComputador() { return computador; }
+}
 
-    public ComputadorBuilder addRAM(String ram) {
-        computador.setRAM(ram);
-        return this;
-    }
+// 3. BUILDER CONCRETO - COMPUTADOR OFFICE
+class ComputadorOfficeBuilder implements ComputadorBuilder {
+    private Computador computador = new Computador();
 
-    public ComputadorBuilder addArmazenamento(String armazenamento) {
-        computador.setArmazenamento(armazenamento);
-        return this;
-    }
+    public void buildProcessador() { computador.processador = "Intel i3"; }
+    public void buildMemoria() { computador.memoria = "8GB RAM"; }
+    public void buildDisco() { computador.disco = "256GB SSD"; }
+    public Computador getComputador() { return computador; }
+}
 
-    public ComputadorBuilder addPlacaDeVideo(String gpu) {
-        computador.setPlacaDeVideo(gpu);
-        return this;
-    }
-
-    public Computador construir() {
-        return computador;
+// 4. DIRETOR (Controla o algoritmo de construção)
+class Diretor {
+    void construirComputador(ComputadorBuilder builder) {
+        builder.buildProcessador();
+        builder.buildMemoria();
+        builder.buildDisco();
     }
 }
 
-// CLIENTE
+// 5. CLIENTE
 public class Ex1 {
     public static void main(String[] args) {
-        Computador gamer = new ComputadorBuilder()
-            .addCPU("Intel i9")
-            .addRAM("32GB")
-            .addArmazenamento("1TB SSD")
-            .addPlacaDeVideo("RTX 4090")
-            .construir();
+        Diretor diretor = new Diretor();
+        
+        // Construindo um Gamer
+        ComputadorBuilder gamerBuilder = new ComputadorGamerBuilder();
+        diretor.construirComputador(gamerBuilder);
+        Computador c1 = gamerBuilder.getComputador();
+        c1.mostrarConfig();
 
-        Computador office = new ComputadorBuilder()
-            .addCPU("Intel i5")
-            .addRAM("16GB")
-            .addArmazenamento("512GB SSD")
-            .construir(); // Placa de vídeo opcional
+        System.out.println("-------------------------");
 
-        System.out.println("Gamer: " + gamer);
-        System.out.println("Office: " + office);
+        // Construindo um Office
+        ComputadorBuilder officeBuilder = new ComputadorOfficeBuilder();
+        diretor.construirComputador(officeBuilder);
+        Computador c2 = officeBuilder.getComputador();
+        c2.mostrarConfig();
     }
 }
