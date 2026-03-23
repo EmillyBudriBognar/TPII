@@ -1,120 +1,71 @@
-// PRODUTOS ABSTRATOS
-abstract class Botao {
-    public abstract String render();
+/**
+ * PADRÃO: ABSTRACT FACTORY (FÁBRICA ABSTRATA)
+ * 
+ * Exercício: Sistema de Interface de Plataforma.
+ * O objetivo é garantir que os componentes da interface (Botão e Janela) 
+ * correspondam ao mesmo Sistema Operacional (Windows ou Linux).
+ */
+
+// 1. PRODUTOS ABSTRATOS
+interface Botao {
+    String renderizar();
 }
 
-abstract class Janela {
-    public abstract String render();
+interface Janela {
+    String renderizar();
 }
 
-// PRODUTOS CONCRETOS - WINDOWS
-class BotaoWindows extends Botao {
-    @Override
-    public String render() {
-        return "Botão cinza padrão Windows.";
-    }
+// 2. PRODUTOS CONCRETOS - FAMÍLIA WINDOWS
+class BotaoWindows implements Botao {
+    public String renderizar() { return "[ Renderizando Botão no estilo Windows ]"; }
 }
 
-class JanelaWindows extends Janela {
-    @Override
-    public String render() {
-        return "Janela com bordas retas (Windows).";
-    }
+class JanelaWindows implements Janela {
+    public String renderizar() { return "[ Renderizando Janela no estilo Windows ]"; }
 }
 
-// PRODUTOS CONCRETOS - MAC
-class BotaoMac extends Botao {
-    @Override
-    public String render() {
-        return "Botão arredondado estilo Mac.";
-    }
+// 2. PRODUTOS CONCRETOS - FAMÍLIA LINUX
+class BotaoLinux implements Botao {
+    public String renderizar() { return "[ Renderizando Botão no estilo Linux (GTK) ]"; }
 }
 
-class JanelaMac extends Janela {
-    @Override
-    public String render() {
-        return "Janela translúcida do MacOS.";
-    }
+class JanelaLinux implements Janela {
+    public String renderizar() { return "[ Renderizando Janela no estilo Linux (GTK) ]"; }
 }
 
-// PRODUTOS CONCRETOS - LINUX
-class BotaoLinux extends Botao {
-    @Override
-    public String render() {
-        return "Botão customizável do Linux.";
-    }
+// 3. FABRICA ABSTRATA
+interface FabricaUI {
+    Botao criarBotao();
+    Janela criarJanela();
 }
 
-class JanelaLinux extends Janela {
-    @Override
-    public String render() {
-        return "Janela terminal do Linux.";
-    }
+// 4. FABRICAS CONCRETAS
+class FabricaWindows implements FabricaUI {
+    public Botao criarBotao() { return new BotaoWindows(); }
+    public Janela criarJanela() { return new JanelaWindows(); }
 }
 
-// FABRICA ABSTRATA
-abstract class FabricaGUI {
-    public abstract Botao criarBotao();
-
-    public abstract Janela criarJanela();
+class FabricaLinux implements FabricaUI {
+    public Botao criarBotao() { return new BotaoLinux(); }
+    public Janela criarJanela() { return new JanelaLinux(); }
 }
 
-// FABRICAS CONCRETAS
-class FabricaWindows extends FabricaGUI {
-    @Override
-    public Botao criarBotao() {
-        return new BotaoWindows();
-    }
-
-    @Override
-    public Janela criarJanela() {
-        return new JanelaWindows();
-    }
-}
-
-class FabricaMac extends FabricaGUI {
-    @Override
-    public Botao criarBotao() {
-        return new BotaoMac();
-    }
-
-    @Override
-    public Janela criarJanela() {
-        return new JanelaMac();
-    }
-}
-
-class FabricaLinux extends FabricaGUI {
-    @Override
-    public Botao criarBotao() {
-        return new BotaoLinux();
-    }
-
-    @Override
-    public Janela criarJanela() {
-        return new JanelaLinux();
-    }
-}
-
-// CLIENTE
+// 5. CLIENTE
 public class Ex3 {
-    public static void iniciarSistema(FabricaGUI fabrica) {
+    public static void renderizarInterface(FabricaUI fabrica) {
         Botao botao = fabrica.criarBotao();
         Janela janela = fabrica.criarJanela();
 
-        System.out.println(" -> " + botao.render());
-        System.out.println(" -> " + janela.render());
+        System.out.println(janela.renderizar());
+        System.out.println(botao.renderizar());
         System.out.println(" ----------------------------");
     }
 
     public static void main(String[] args) {
-        System.out.println("\n--- CARREGANDO WINDOWS ---");
-        iniciarSistema(new FabricaWindows());
+        System.out.println("\n--- INTERFACE WINDOWS ---");
+        renderizarInterface(new FabricaWindows());
 
-        System.out.println("\n--- CARREGANDO MAC ---");
-        iniciarSistema(new FabricaMac());
-
-        System.out.println("\n--- CARREGANDO LINUX ---");
-        iniciarSistema(new FabricaLinux());
+        System.out.println("\n--- INTERFACE LINUX ---");
+        renderizarInterface(new FabricaLinux());
     }
 }

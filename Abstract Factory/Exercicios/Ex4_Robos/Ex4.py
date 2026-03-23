@@ -1,50 +1,77 @@
-# PRODUTOS ABSTRATOS
-class RoboMontador:
-    def operar(self): pass
+"""
+PADRÃO: ABSTRACT FACTORY (FÁBRICA ABSTRATA)
 
-class RoboInspetor:
-    def operar(self): pass
+Exercício: Sistema de Fábrica de Robôs.
+A Fábrica Abstrata permite encapsular a criação de componentes de robôs 
+especializados para diferentes ambientes operativos.
+"""
 
-# PRODUTO CONCRETO - LINHA AUTOMOTIVA
-class MontadorAutomotivo(RoboMontador):
-    def operar(self): return "Montador de carros: Montando carcaça do veículo..."
+from abc import ABC, abstractmethod
 
-class InspetorAutomotivo(RoboInspetor):
-    def operar(self): return "Inspetor de peças automotivas: Verificando alinhamento das portas."
+# 1. PRODUTOS ABSTRATOS
+class Armadura(ABC):
+    @abstractmethod
+    def exibir(self):
+        pass
 
-# PRODUTO CONCRETO - LINHA ELETRÔNICOS
-class MontadorEletronico(RoboMontador):
-    def operar(self): return "Montador de circuitos: Soldando componentes na placa mãe..."
+class Arma(ABC):
+    @abstractmethod
+    def exibir(self):
+        pass
 
-class InspetorEletronico(RoboInspetor):
-    def operar(self): return "Inspetor de chips: Testando continuidade do circuito."
+# 2. PRODUTOS CONCRETOS - FAMÍLIA TERRESTRE
+class ArmaduraTanque(Armadura):
+    def exibir(self):
+        return "Armadura: Blindagem Pesada (Terrestre)."
 
-# FABRICA ABSTRATA
-class FabricaRobo:
-    def criar_montador(self): pass
-    def criar_inspetor(self): pass
+class Canhao(Arma):
+    def exibir(self):
+        return "Arma: Canhão de Longo Alcance."
 
-# FABRICAS CONCRETAS
-class FabricaAutomotiva(FabricaRobo):
-    def criar_montador(self): return MontadorAutomotivo()
-    def criar_inspetor(self): return InspetorAutomotivo()
+# 2. PRODUTOS CONCRETOS - FAMÍLIA ESPACIAL
+class ArmaduraLeve(Armadura):
+    def exibir(self):
+        return "Armadura: Revestimento de Titânio (Espacial)."
 
-class FabricaEletronicos(FabricaRobo):
-    def criar_montador(self): return MontadorEletronico()
-    def criar_inspetor(self): return InspetorEletronico()
+class Laser(Arma):
+    def exibir(self):
+        return "Arma: Canhão Laser de Precisão."
 
-# CLIENTE
-def operar_linha(fabrica):
-    montador = fabrica.criar_montador()
-    inspetor = fabrica.criar_inspetor()
+# 3. FABRICA ABSTRATA
+class FabricaRobo(ABC):
+    @abstractmethod
+    def criar_armadura(self) -> Armadura:
+        pass
+    
+    @abstractmethod
+    def criar_arma(self) -> Arma:
+        pass
 
-    print(f" -> {montador.operar()}")
-    print(f" -> {inspetor.operar()}")
+# 4. FABRICAS CONCRETAS
+class FabricaRoboTerrestre(FabricaRobo):
+    def criar_armadura(self):
+        return ArmaduraTanque()
+    def criar_arma(self):
+        return Canhao()
+
+class FabricaRoboEspacial(FabricaRobo):
+    def criar_armadura(self):
+        return ArmaduraLeve()
+    def criar_arma(self):
+        return Laser()
+
+# 5. CLIENTE
+def montar_robo(fabrica: FabricaRobo):
+    armadura = fabrica.criar_armadura()
+    arma = fabrica.criar_arma()
+
+    print(armadura.exibir())
+    print(arma.exibir())
     print(" ----------------------------")
 
 if __name__ == "__main__":
-    print("\n--- PRODUÇÃO DE CARROS ---")
-    operar_linha(FabricaAutomotiva())
+    print("\n--- CONFIGURAÇÃO TERRESTRE ---")
+    montar_robo(FabricaRoboTerrestre())
 
-    print("\n--- PRODUÇÃO DE ELETRÔNICOS ---")
-    operar_linha(FabricaEletronicos())
+    print("\n--- CONFIGURAÇÃO ESPACIAL ---")
+    montar_robo(FabricaRoboEspacial())

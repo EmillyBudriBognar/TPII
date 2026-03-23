@@ -1,48 +1,80 @@
-# PRODUTOS ABSTRATOS
-class ProdutoModa:
-    def __str__(self): pass
+"""
+PADRÃO: ABSTRACT FACTORY (FÁBRICA ABSTRATA)
 
-class ProdutoEletronico:
-    def __str__(self): pass
+O sistema de Loja Virtual usa o Abstract Factory para garantir que os itens 
+de um 'Combo' pertençam sempre à mesma categoria (Fashion ou Tech).
+"""
 
-# PRODUTOS CONCRETOS - FASHION
+from abc import ABC, abstractmethod
+
+# 1. PRODUTOS ABSTRATOS
+class ProdutoModa(ABC):
+    @abstractmethod
+    def exibir_detalhes(self):
+        pass
+
+class ProdutoEletronico(ABC):
+    @abstractmethod
+    def exibir_detalhes(self):
+        pass
+
+# 2. PRODUTOS CONCRETOS - FAMÍLIA FASHION
 class CamisaFashion(ProdutoModa):
-    def __str__(self): return "Camisa Fashion"
+    def exibir_detalhes(self):
+        return "Camisa Fashion: Estampa moderna."
 
 class CelularFashion(ProdutoEletronico):
-    def __str__(self): return "Celular Fashion."
+    def exibir_detalhes(self):
+        return "Celular Fashion: Design elegante."
 
-# PRODUTOS CONCRETOS - TECH
+# 2. PRODUTOS CONCRETOS - FAMÍLIA TECH
 class CamisaTech(ProdutoModa):
-    def __str__(self): return "Camisa Tech"
+    def exibir_detalhes(self):
+        return "Camisa Tech: Tecido inteligente."
 
 class CelularTech(ProdutoEletronico):
-    def __str__(self): return "Celular Tech."
+    def exibir_detalhes(self):
+        return "Celular Tech: Alta performance."
 
-# FABRICA ABSTRATA
-class FabricaCombo:
-    def criar_camisa(self): pass
-    def criar_celular(self): pass
+# 3. FABRICA ABSTRATA
+class FabricaCombo(ABC):
+    @abstractmethod
+    def criar_camisa(self) -> ProdutoModa:
+        pass
 
-# FABRICAS CONCRETAS
-class FabricaComboTech(FabricaCombo):
-    def criar_camisa(self): return CamisaTech()
-    def criar_celular(self): return CelularTech()
+    @abstractmethod
+    def criar_celular(self) -> ProdutoEletronico:
+        pass
 
+# 4. FABRICAS CONCRETAS
 class FabricaComboFashion(FabricaCombo):
-    def criar_camisa(self): return CamisaFashion()
-    def criar_celular(self): return CelularFashion()
+    def criar_camisa(self):
+        return CamisaFashion()
+    
+    def criar_celular(self):
+        return CelularFashion()
 
-# CLIENTE
-def loja_virtual(fabrica):
+class FabricaComboTech(FabricaCombo):
+    def criar_camisa(self):
+        return CamisaTech()
+    
+    def criar_celular(self):
+        return CelularTech()
+
+# 5. CLIENTE
+def loja_virtual(fabrica: FabricaCombo):
     camisa = fabrica.criar_camisa()
     celular = fabrica.criar_celular()
-    print(camisa)
-    print(celular)
 
+    print(camisa.exibir_detalhes())
+    print(celular.exibir_detalhes())
+
+# Execução
 if __name__ == "__main__":
-    print("Combo fashion: ")
+    print("Combo Fashion:")
     loja_virtual(FabricaComboFashion())
+    
     print("-------")
-    print("Combo tech: ")
+    
+    print("Combo Tech:")
     loja_virtual(FabricaComboTech())

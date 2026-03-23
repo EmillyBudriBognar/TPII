@@ -1,64 +1,77 @@
-# PRODUTOS ABSTRATOS
-class Botao:
-    def render(self): pass
+"""
+PADRÃO: ABSTRACT FACTORY (FÁBRICA ABSTRATA)
 
-class Janela:
-    def render(self): pass
+Exercício: Sistema de Interface de Plataforma.
+Nesse exemplo, o cliente usa uma fábrica para criar componentes que 
+pertencem sempre à mesma plataforma visual (Windows ou Linux).
+"""
 
-# PRODUTOS CONCRETOS - WINDOWS
+from abc import ABC, abstractmethod
+
+# 1. PRODUTOS ABSTRATOS
+class Botao(ABC):
+    @abstractmethod
+    def renderizar(self):
+        pass
+
+class Janela(ABC):
+    @abstractmethod
+    def renderizar(self):
+        pass
+
+# 2. PRODUTOS CONCRETOS - FAMÍLIA WINDOWS
 class BotaoWindows(Botao):
-    def render(self): return "Botão cinza padrão Windows."
+    def renderizar(self):
+        return "[ Renderizando Botão no estilo Windows ]"
 
 class JanelaWindows(Janela):
-    def render(self): return "Janela com bordas retas (Windows)."
+    def renderizar(self):
+        return "[ Renderizando Janela no estilo Windows ]"
 
-# PRODUTOS CONCRETOS - MAC
-class BotaoMac(Botao):
-    def render(self): return "Botão arredondado estilo Mac."
-
-class JanelaMac(Janela):
-    def render(self): return "Janela translúcida do MacOS."
-
-# PRODUTOS CONCRETOS - LINUX
+# 2. PRODUTOS CONCRETOS - FAMÍLIA LINUX
 class BotaoLinux(Botao):
-    def render(self): return "Botão customizável do Linux."
+    def renderizar(self):
+        return "[ Renderizando Botão no estilo Linux (GTK) ]"
 
 class JanelaLinux(Janela):
-    def render(self): return "Janela terminal do Linux."
+    def renderizar(self):
+        return "[ Renderizando Janela no estilo Linux (GTK) ]"
 
-# FABRICA ABSTRATA
-class FabricaGUI:
-    def criar_botao(self): pass
-    def criar_janela(self): pass
+# 3. FABRICA ABSTRATA
+class FabricaUI(ABC):
+    @abstractmethod
+    def criar_botao(self) -> Botao:
+        pass
+    
+    @abstractmethod
+    def criar_janela(self) -> Janela:
+        pass
 
-# FABRICAS CONCRETAS
-class FabricaWindows(FabricaGUI):
-    def criar_botao(self): return BotaoWindows()
-    def criar_janela(self): return JanelaWindows()
+# 4. FABRICAS CONCRETAS
+class FabricaWindows(FabricaUI):
+    def criar_botao(self):
+        return BotaoWindows()
+    def criar_janela(self):
+        return JanelaWindows()
 
-class FabricaMac(FabricaGUI):
-    def criar_botao(self): return BotaoMac()
-    def criar_janela(self): return JanelaMac()
+class FabricaLinux(FabricaUI):
+    def criar_botao(self):
+        return BotaoLinux()
+    def criar_janela(self):
+        return JanelaLinux()
 
-class FabricaLinux(FabricaGUI):
-    def criar_botao(self): return BotaoLinux()
-    def criar_janela(self): return JanelaLinux()
-
-# CLIENTE
-def iniciar_sistema(fabrica):
+# 5. CLIENTE
+def renderizar_interface(fabrica: FabricaUI):
     botao = fabrica.criar_botao()
     janela = fabrica.criar_janela()
 
-    print(f" -> {botao.render()}")
-    print(f" -> {janela.render()}")
+    print(janela.renderizar())
+    print(botao.renderizar())
     print(" ----------------------------")
 
 if __name__ == "__main__":
-    print("\n--- CARREGANDO WINDOWS ---")
-    iniciar_sistema(FabricaWindows())
+    print("\n--- INTERFACE WINDOWS ---")
+    renderizar_interface(FabricaWindows())
 
-    print("\n--- CARREGANDO MAC ---")
-    iniciar_sistema(FabricaMac())
-
-    print("\n--- CARREGANDO LINUX ---")
-    iniciar_sistema(FabricaLinux())
+    print("\n--- INTERFACE LINUX ---")
+    renderizar_interface(FabricaLinux())

@@ -1,90 +1,71 @@
-// PRODUTOS ABSTRATOS
-abstract class RoboMontador {
-    public abstract String operar();
+/**
+ * PADRÃO: ABSTRACT FACTORY (FÁBRICA ABSTRATA)
+ * 
+ * Exercício: Sistema de Fábrica de Robôs.
+ * O objetivo é criar famílias de componentes (Armadura e Arma) 
+ * que variam de acordo com o ambiente de operação (Terrestre ou Espacial).
+ */
+
+// 1. PRODUTOS ABSTRATOS
+interface Armadura {
+    String exibir();
 }
 
-abstract class RoboInspetor {
-    public abstract String operar();
+interface Arma {
+    String exibir();
 }
 
-// PRODUTO CONCRETO - LINHA AUTOMOTIVA
-class MontadorAutomotivo extends RoboMontador {
-    @Override
-    public String operar() {
-        return "Montador de carros: Montando carcaça do veículo...";
-    }
+// 2. PRODUTOS CONCRETOS - FAMÍLIA TERRESTRE
+class ArmaduraTanque implements Armadura {
+    public String exibir() { return "Armadura: Blindagem Pesada (Terrestre)."; }
 }
 
-class InspetorAutomotivo extends RoboInspetor {
-    @Override
-    public String operar() {
-        return "Inspetor de peças automotivas: Verificando alinhamento das portas.";
-    }
+class Canhao implements Arma {
+    public String exibir() { return "Arma: Canhão de Longo Alcance."; }
 }
 
-// PRODUTO CONCRETO - LINHA ELETRÔNICOS
-class MontadorEletronico extends RoboMontador {
-    @Override
-    public String operar() {
-        return "Montador de circuitos: Soldando componentes na placa mãe.";
-    }
+// 2. PRODUTOS CONCRETOS - FAMÍLIA ESPACIAL
+class ArmaduraLeve implements Armadura {
+    public String exibir() { return "Armadura: Revestimento de Titânio (Espacial)."; }
 }
 
-class InspetorEletronico extends RoboInspetor {
-    @Override
-    public String operar() {
-        return "Inspetor de chips: Testando continuidade do circuito.";
-    }
+class Laser implements Arma {
+    public String exibir() { return "Arma: Canhão Laser de Precisão."; }
 }
 
-// FÁBRICA ABSTRATA
-abstract class FabricaRobo {
-    public abstract RoboMontador criarMontador();
-
-    public abstract RoboInspetor criarInspetor();
+// 3. FABRICA ABSTRATA
+interface FabricaRobo {
+    Armadura criarArmadura();
+    Arma criarArma();
 }
 
-// FÁBRICAS CONCRETAS
-class FabricaAutomotiva extends FabricaRobo {
-    @Override
-    public RoboMontador criarMontador() {
-        return new MontadorAutomotivo();
-    }
-
-    @Override
-    public RoboInspetor criarInspetor() {
-        return new InspetorAutomotivo();
-    }
+// 4. FABRICAS CONCRETAS
+class FabricaRoboTerrestre implements FabricaRobo {
+    public Armadura criarArmadura() { return new ArmaduraTanque(); }
+    public Arma criarArma() { return new Canhao(); }
 }
 
-class FabricaEletronicos extends FabricaRobo {
-    @Override
-    public RoboMontador criarMontador() {
-        return new MontadorEletronico();
-    }
-
-    @Override
-    public RoboInspetor criarInspetor() {
-        return new InspetorEletronico();
-    }
+class FabricaRoboEspacial implements FabricaRobo {
+    public Armadura criarArmadura() { return new ArmaduraLeve(); }
+    public Arma criarArma() { return new Laser(); }
 }
 
-// CLIENTE
+// 5. CLIENTE
 public class Ex4 {
-    public static void operarLinha(FabricaRobo fabrica) {
-        RoboMontador montador = fabrica.criarMontador();
-        RoboInspetor inspetor = fabrica.criarInspetor();
+    public static void montarRobo(FabricaRobo fabrica) {
+        Armadura armadura = fabrica.criarArmadura();
+        Arma arma = fabrica.criarArma();
 
-        System.out.println(" -> " + montador.operar());
-        System.out.println(" -> " + inspetor.operar());
+        System.out.println(armadura.exibir());
+        System.out.println(arma.exibir());
         System.out.println(" ----------------------------");
     }
 
     public static void main(String[] args) {
-        System.out.println("\n--- PRODUÇÃO DE CARROS ---");
-        operarLinha(new FabricaAutomotiva());
+        System.out.println("\n--- CONFIGURAÇÃO TERRESTRE ---");
+        montarRobo(new FabricaRoboTerrestre());
 
-        System.out.println("\n--- PRODUÇÃO DE ELETRÔNICOS ---");
-        operarLinha(new FabricaEletronicos());
+        System.out.println("\n--- CONFIGURAÇÃO ESPACIAL ---");
+        montarRobo(new FabricaRoboEspacial());
     }
 }

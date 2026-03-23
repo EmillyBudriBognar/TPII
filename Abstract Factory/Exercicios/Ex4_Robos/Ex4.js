@@ -1,59 +1,67 @@
-// PRODUTOS ABSTRATOS
-class RoboMontador {
-    operar() { throw new Error("Método abstrato"); }
+/**
+ * PADRÃO: ABSTRACT FACTORY (FÁBRICA ABSTRATA)
+ * 
+ * Exercício: Sistema de Fábrica de Robôs.
+ * Este exercício mostra como as fábricas abstratas podem garantir que as partes 
+ * de um robô (Armadura e Arma) sejam compatíveis com o ambiente de destino.
+ */
+
+// 1. PRODUTOS ABSTRATOS
+class Armadura {
+    exibir() { throw new Error("Método abstrato"); }
 }
 
-class RoboInspetor {
-    operar() { throw new Error("Método abstrato"); }
+class Arma {
+    exibir() { throw new Error("Método abstrato"); }
 }
 
-// PRODUTO CONCRETO - LINHA AUTOMOTIVA
-class MontadorAutomotivo extends RoboMontador {
-    operar() { return "Montador de carros: Montando carcaça do veículo..."; }
+// 2. PRODUTOS CONCRETOS - FAMÍLIA TERRESTRE
+class ArmaduraTanque extends Armadura {
+    exibir() { return "Armadura: Blindagem Pesada (Terrestre)."; }
 }
 
-class InspetorAutomotivo extends RoboInspetor {
-    operar() { return "Inspetor de peças automotivas: Verificando alinhamento das portas."; }
+class Canhao extends Arma {
+    exibir() { return "Arma: Canhão de Longo Alcance."; }
 }
 
-// PRODUTO CONCRETO - LINHA ELETRÔNICOS
-class MontadorEletronico extends RoboMontador {
-    operar() { return "Montador de circuitos: Soldando componentes na placa mãe..."; }
+// 2. PRODUTOS CONCRETOS - FAMÍLIA ESPACIAL
+class ArmaduraLeve extends Armadura {
+    exibir() { return "Armadura: Revestimento de Titânio (Espacial)."; }
 }
 
-class InspetorEletronico extends RoboInspetor {
-    operar() { return "Inspetor de chips: Testando continuidade do circuito."; }
+class Laser extends Arma {
+    exibir() { return "Arma: Canhão Laser de Precisão."; }
 }
 
-// FABRICA ABSTRATA
+// 3. FABRICA ABSTRATA
 class FabricaRobo {
-    criarMontador() { throw new Error("Método abstrato"); }
-    criarInspetor() { throw new Error("Método abstrato"); }
+    criarArmadura() { throw new Error("Método abstrato"); }
+    criarArma() { throw new Error("Método abstrato"); }
 }
 
-// FABRICAS CONCRETAS
-class FabricaAutomotiva extends FabricaRobo {
-    criarMontador() { return new MontadorAutomotivo(); }
-    criarInspetor() { return new InspetorAutomotivo(); }
+// 4. FABRICAS CONCRETAS
+class FabricaRoboTerrestre extends FabricaRobo {
+    criarArmadura() { return new ArmaduraTanque(); }
+    criarArma() { return new Canhao(); }
 }
 
-class FabricaEletronicos extends FabricaRobo {
-    criarMontador() { return new MontadorEletronico(); }
-    criarInspetor() { return new InspetorEletronico(); }
+class FabricaRoboEspacial extends FabricaRobo {
+    criarArmadura() { return new ArmaduraLeve(); }
+    criarArma() { return new Laser(); }
 }
 
-// CLIENTE
-function operarLinha(fabrica) {
-    const montador = fabrica.criarMontador();
-    const inspetor = fabrica.criarInspetor();
+// 5. CLIENTE
+function montarRobo(fabrica) {
+    const armadura = fabrica.criarArmadura();
+    const arma = fabrica.criarArma();
 
-    console.log(" -> " + montador.operar());
-    console.log(" -> " + inspetor.operar());
+    console.log(armadura.exibir());
+    console.log(arma.exibir());
     console.log(" ----------------------------");
 }
 
-console.log("\n--- PRODUÇÃO DE CARROS ---");
-operarLinha(new FabricaAutomotiva());
+console.log("\n--- CONFIGURAÇÃO TERRESTRE ---");
+montarRobo(new FabricaRoboTerrestre());
 
-console.log("\n--- PRODUÇÃO DE ELETRÔNICOS ---");
-operarLinha(new FabricaEletronicos());
+console.log("\n--- CONFIGURAÇÃO ESPACIAL ---");
+montarRobo(new FabricaRoboEspacial());

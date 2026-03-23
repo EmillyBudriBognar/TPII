@@ -1,76 +1,67 @@
-// PRODUTOS ABSTRATOS
+/**
+ * PADRÃO: ABSTRACT FACTORY (FÁBRICA ABSTRATA)
+ * 
+ * Exercício: Sistema de Interface de Plataforma.
+ * O padrão garante que os componentes da interface (Botão e Janela) 
+ * correspondam ao mesmo estilo visual da plataforma (Windows ou Linux).
+ */
+
+// 1. PRODUTOS ABSTRATOS
 class Botao {
-    render() { throw new Error("Método abstrato"); }
+    renderizar() { throw new Error("Método abstrato"); }
 }
 
 class Janela {
-    render() { throw new Error("Método abstrato"); }
+    renderizar() { throw new Error("Método abstrato"); }
 }
 
-// PRODUTOS CONCRETOS - WINDOWS
+// 2. PRODUTOS CONCRETOS - FAMÍLIA WINDOWS
 class BotaoWindows extends Botao {
-    render() { return "Botão cinza padrão Windows."; }
+    renderizar() { return "[ Renderizando Botão no estilo Windows ]"; }
 }
 
 class JanelaWindows extends Janela {
-    render() { return "Janela com bordas retas (Windows)."; }
+    renderizar() { return "[ Renderizando Janela no estilo Windows ]"; }
 }
 
-// PRODUTOS CONCRETOS - MAC
-class BotaoMac extends Botao {
-    render() { return "Botão arredondado estilo Mac."; }
-}
-
-class JanelaMac extends Janela {
-    render() { return "Janela translúcida do MacOS."; }
-}
-
-// PRODUTOS CONCRETOS - LINUX
+// 2. PRODUTOS CONCRETOS - FAMÍLIA LINUX
 class BotaoLinux extends Botao {
-    render() { return "Botão customizável do Linux."; }
+    renderizar() { return "[ Renderizando Botão no estilo Linux (GTK) ]"; }
 }
 
 class JanelaLinux extends Janela {
-    render() { return "Janela terminal do Linux."; }
+    renderizar() { return "[ Renderizando Janela no estilo Linux (GTK) ]"; }
 }
 
-// FABRICA ABSTRATA
-class FabricaGUI {
+// 3. FABRICA ABSTRATA
+class FabricaUI {
     criarBotao() { throw new Error("Método abstrato"); }
     criarJanela() { throw new Error("Método abstrato"); }
 }
 
-// FABRICAS CONCRETAS
-class FabricaWindows extends FabricaGUI {
+// 4. FABRICAS CONCRETAS
+class FabricaWindows extends FabricaUI {
     criarBotao() { return new BotaoWindows(); }
     criarJanela() { return new JanelaWindows(); }
 }
 
-class FabricaMac extends FabricaGUI {
-    criarBotao() { return new BotaoMac(); }
-    criarJanela() { return new JanelaMac(); }
-}
-
-class FabricaLinux extends FabricaGUI {
+class FabricaLinux extends FabricaUI {
     criarBotao() { return new BotaoLinux(); }
     criarJanela() { return new JanelaLinux(); }
 }
 
-// CLIENTE
-function iniciarSistema(fabrica) {
+// 5. CLIENTE
+function renderizarInterface(fabrica) {
     const botao = fabrica.criarBotao();
     const janela = fabrica.criarJanela();
 
-    console.log(" -> " + botao.render());
-    console.log(" -> " + janela.render());
+    console.log(janela.renderizar());
+    console.log(botao.renderizar());
     console.log(" ----------------------------");
 }
 
-console.log("\n--- CARREGANDO WINDOWS ---");
-iniciarSistema(new FabricaWindows());
+console.log("\n--- INTERFACE WINDOWS ---");
+renderizarInterface(new FabricaWindows());
 
-console.log("\n--- CARREGANDO MAC ---");
-iniciarSistema(new FabricaMac());
-
-console.log("\n--- CARREGANDO LINUX ---");
-iniciarSistema(new FabricaLinux());
+console.log("\n--- INTERFACE LINUX ---");
+renderizarInterface(new FabricaLinux());

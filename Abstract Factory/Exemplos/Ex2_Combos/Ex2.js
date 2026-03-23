@@ -1,60 +1,68 @@
-// PRODUTOS ABSTRATOS
+/**
+ * PADRÃO: ABSTRACT FACTORY (FÁBRICA ABSTRATA)
+ * 
+ * Este exemplo mostra como criar combos de produtos relacionados (Moda e Eletrônico)
+ * garantindo consistência entre eles através de fábricas específicas.
+ */
+
+// 1. PRODUTOS ABSTRATOS
 class ProdutoModa {
-    toString() { throw new Error("Método abstrato"); }
+    exibirDetalhes() { throw new Error("Método abstrato"); }
 }
 
 class ProdutoEletronico {
-    toString() { throw new Error("Método abstrato"); }
+    exibirDetalhes() { throw new Error("Método abstrato"); }
 }
 
-// PRODUTOS CONCRETOS - FASHION
+// 2. PRODUTOS CONCRETOS - FAMÍLIA FASHION
 class CamisaFashion extends ProdutoModa {
-    toString() { return "Camisa Fashion"; }
+    exibirDetalhes() { return "Camisa Fashion: Estampa moderna."; }
 }
 
 class CelularFashion extends ProdutoEletronico {
-    toString() { return "Celular Fashion."; }
+    exibirDetalhes() { return "Celular Fashion: Design elegante."; }
 }
 
-// PRODUTOS CONCRETOS - TECH
+// 2. PRODUTOS CONCRETOS - FAMÍLIA TECH
 class CamisaTech extends ProdutoModa {
-    toString() { return "Camisa Tech"; }
+    exibirDetalhes() { return "Camisa Tech: Tecido inteligente."; }
 }
 
 class CelularTech extends ProdutoEletronico {
-    toString() { return "Celular Tech."; }
+    exibirDetalhes() { return "Celular Tech: Alta performance."; }
 }
 
-// FABRICA ABSTRATA
+// 3. FABRICA ABSTRATA
 class FabricaCombo {
     criarCamisa() { throw new Error("Método abstrato"); }
     criarCelular() { throw new Error("Método abstrato"); }
 }
 
-// FABRICAS CONCRETAS
-class FabricaComboTech extends FabricaCombo {
-    criarCamisa() { return new CamisaTech(); }
-    criarCelular() { return new CelularTech(); }
-}
-
+// 4. FABRICAS CONCRETAS
 class FabricaComboFashion extends FabricaCombo {
     criarCamisa() { return new CamisaFashion(); }
     criarCelular() { return new CelularFashion(); }
 }
 
-// CLIENTE
+class FabricaComboTech extends FabricaCombo {
+    criarCamisa() { return new CamisaTech(); }
+    criarCelular() { return new CelularTech(); }
+}
+
+// 5. CLIENTE
 function lojaVirtual(fabrica) {
     const camisa = fabrica.criarCamisa();
     const celular = fabrica.criarCelular();
 
-    console.log(camisa.toString());
-    console.log(celular.toString());
+    console.log(camisa.exibirDetalhes());
+    console.log(celular.exibirDetalhes());
 }
 
-console.log("Combo fashion: ");
+// Testando os combos
+console.log("Combo Fashion:");
 lojaVirtual(new FabricaComboFashion());
 
 console.log("-------");
 
-console.log("Combo tech: ");
+console.log("Combo Tech:");
 lojaVirtual(new FabricaComboTech());

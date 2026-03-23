@@ -1,20 +1,24 @@
-// PRODUTOS ABSTRATOS
+/**
+ * PADRÃO: ABSTRACT FACTORY (FÁBRICA ABSTRATA)
+ * 
+ * Exercício: Sistema de Pagamentos de Loja.
+ * Este padrão garante que os objetos criados (Cartão e Boleto) sejam 
+ * compatíveis com a mesma instituição bancária (Banco A ou Banco B).
+ */
+
+// 1. PRODUTOS ABSTRATOS
 class CartaoCredito {
-    pagar(valor) {
-        throw new Error("Método abstrato");
-    }
+    pagar(valor) { throw new Error("Método abstrato"); }
 }
 
 class Boleto {
-    pagar(valor) {
-        throw new Error("Método abstrato");
-    }
+    pagar(valor) { throw new Error("Método abstrato"); }
 }
 
-// PRODUTOS CONCRETOS - BANCO A
+// 2. PRODUTOS CONCRETOS - FAMÍLIA BANCO A
 class CartaoBancoA extends CartaoCredito {
     pagar(valor) {
-        return `Banco A: Cobrança de R$ ${valor.toFixed(2)} no cartão feita.`;
+        return `Banco A: Cobrança de R$ ${valor.toFixed(2)} no cartão realizada.`;
     }
 }
 
@@ -24,10 +28,10 @@ class BoletoBancoA extends Boleto {
     }
 }
 
-// PRODUTOS CONCRETOS - BANCO B
+// 2. PRODUTOS CONCRETOS - FAMÍLIA BANCO B
 class CartaoBancoB extends CartaoCredito {
     pagar(valor) {
-        return `Banco B: Pagamento de R$ ${valor.toFixed(2)} aprovado!`;
+        return `Banco B: Pagamento de R$ ${valor.toFixed(2)} aprovado no cartão!`;
     }
 }
 
@@ -37,13 +41,13 @@ class BoletoBancoB extends Boleto {
     }
 }
 
-// FABRICA ABSTRATA
+// 3. FABRICA ABSTRATA
 class FabricaBanco {
     criarCartao() { throw new Error("Método abstrato"); }
     criarBoleto() { throw new Error("Método abstrato"); }
 }
 
-// FABRICAS CONCRETAS
+// 4. FABRICAS CONCRETAS
 class FabricaBancoA extends FabricaBanco {
     criarCartao() { return new CartaoBancoA(); }
     criarBoleto() { return new BoletoBancoA(); }
@@ -54,7 +58,7 @@ class FabricaBancoB extends FabricaBanco {
     criarBoleto() { return new BoletoBancoB(); }
 }
 
-// CLIENTE
+// 5. CLIENTE
 function finalizarCompra(fabrica, valor) {
     const cartao = fabrica.criarCartao();
     const boleto = fabrica.criarBoleto();
@@ -64,8 +68,8 @@ function finalizarCompra(fabrica, valor) {
     console.log(" ----------------------------");
 }
 
-console.log("\n--- COMPRA NO BANCO A ---");
+console.log("\n--- FINALIZANDO NO BANCO A ---");
 finalizarCompra(new FabricaBancoA(), 420.75);
 
-console.log("\n--- COMPRA NO BANCO B ---");
+console.log("\n--- FINALIZANDO NO BANCO B ---");
 finalizarCompra(new FabricaBancoB(), 189.30);

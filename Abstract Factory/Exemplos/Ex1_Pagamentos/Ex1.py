@@ -1,50 +1,78 @@
-# PRODUTOS ABSTRATOS
-class GatewayPagamento:
-    def autorizar(self, valor): pass
+"""
+PADRÃO: ABSTRACT FACTORY (FÁBRICA ABSTRATA)
 
-class Recibo:
-    def gerar(self, valor): pass
+O padrão Abstract Factory é útil quando o sistema deve ser independente de como 
+seus produtos são criados, compostos e representados. Ele garante que os produtos 
+de uma mesma família sejam usados juntos.
+"""
 
-# PRODUTOS CONCRETOS - PAYPAL
+from abc import ABC, abstractmethod
+
+# 1. PRODUTOS ABSTRATOS
+class GatewayPagamento(ABC):
+    @abstractmethod
+    def autorizar(self, valor):
+        pass
+
+class Recibo(ABC):
+    @abstractmethod
+    def gerar(self, valor):
+        pass
+
+# 2. PRODUTOS CONCRETOS - FAMÍLIA PAYPAL
 class GatewayPayPal(GatewayPagamento):
     def autorizar(self, valor):
-        return f"Paypal: Pagamento de R$ {valor:.2f} autorizado."
+        return f"PayPal: Pagamento de R$ {valor:.2f} autorizado"
 
 class ReciboPayPal(Recibo):
     def gerar(self, valor):
         return f"PayPal: Recibo do pagamento de R$ {valor:.2f}."
 
-# PRODUTOS CONCRETOS - MERCADOPAGO
+# 2. PRODUTOS CONCRETOS - FAMÍLIA MERCADOPAGO
 class GatewayMercadoPago(GatewayPagamento):
     def autorizar(self, valor):
-        return f"Mercado Pago: Pagamento de R$ {valor:.2f} autorizado."
+        return f"Mercado pago: Pagagamento de R$ {valor:.2f} autorizado"
 
 class ReciboMercadoPago(Recibo):
     def gerar(self, valor):
         return f"Mercado Pago: Recibo do pagamento de R$ {valor:.2f}."
 
-# FABRICA ABSTRATA
-class FabricaPagamento:
-    def criar_gateway(self): pass
-    def criar_recibo(self): pass
+# 3. FABRICA ABSTRATA
+class FabricaPagamento(ABC):
+    @abstractmethod
+    def criarGateway(self):
+        pass
 
-# FABRICAS CONCRETAS
+    @abstractmethod
+    def criarRecibo(self):
+        pass
+
+# 4. FABRICA CONCRETA
 class FabricaPayPal(FabricaPagamento):
-    def criar_gateway(self): return GatewayPayPal()
-    def criar_recibo(self): return ReciboPayPal()
+    def criarGateway(self):
+        return GatewayPayPal()
+
+    def criarRecibo(self):
+        return ReciboPayPal()
 
 class FabricaMercadoPago(FabricaPagamento):
-    def criar_gateway(self): return GatewayMercadoPago()
-    def criar_recibo(self): return ReciboMercadoPago()
+    def criarGateway(self):
+        return GatewayMercadoPago()
 
-# CLIENTE
-def finalizar_compra(fabrica, valor):
-    gateway = fabrica.criar_gateway()
-    recibo = fabrica.criar_recibo()
+    def criarRecibo(self):
+        return ReciboMercadoPago()
+
+# 5. CLIENTE
+def finalizarCompra(fabrica: FabricaPagamento, valor: float):
+    # O cliente interage com as abstrações (FabricaPagamento)
+    gateway = fabrica.criarGateway()
+    recibo = fabrica.criarRecibo()
+
     print(gateway.autorizar(valor))
     print(recibo.gerar(valor))
 
+# Execução
 if __name__ == "__main__":
-    finalizar_compra(FabricaPayPal(), 100.99)
+    finalizarCompra(FabricaPayPal(), 100.99)
     print("*************************")
-    finalizar_compra(FabricaMercadoPago(), 3100.99)
+    finalizarCompra(FabricaMercadoPago(), 3100.99)

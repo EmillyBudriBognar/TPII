@@ -1,4 +1,11 @@
-// PRODUTOS ABSTRATOS
+/**
+ * PADRÃO: ABSTRACT FACTORY (FÁBRICA ABSTRATA)
+ * 
+ * O Abstract Factory é um padrão de projeto criacional que permite produzir famílias 
+ * de objetos relacionados (neste caso, Gateway e Recibo) sem especificar suas classes concretas.
+ */
+
+// 1. PRODUTOS ABSTRATOS (Interfaces que definem o que os produtos fazem)
 interface GatewayPagamento {
     String autorizar(double valor);
 }
@@ -7,7 +14,7 @@ interface Recibo {
     String gerar(double valor);
 }
 
-// PRODUTOS CONCRETOS - PAYPAL
+// 2. PRODUTOS CONCRETOS - FAMÍLIA PAYPAL
 class GatewayPayPal implements GatewayPagamento {
     public String autorizar(double valor) {
         return String.format("Paypal: Pagamento de R$ %.2f autorizado.", valor);
@@ -20,7 +27,7 @@ class ReciboPayPal implements Recibo {
     }
 }
 
-// PRODUTOS CONCRETOS - MERCADOPAGO
+// 2. PRODUTOS CONCRETOS - FAMÍLIA MERCADOPAGO
 class GatewayMercadoPago implements GatewayPagamento {
     public String autorizar(double valor) {
         return String.format("Mercado Pago: Pagamento de R$ %.2f autorizado.", valor);
@@ -33,14 +40,13 @@ class ReciboMercadoPago implements Recibo {
     }
 }
 
-// FABRICA ABSTRATA
+// 3. FABRICA ABSTRATA (Interface que define como criar os produtos da família)
 interface FabricaPagamento {
     GatewayPagamento criarGateway();
-
     Recibo criarRecibo();
 }
 
-// FABRICAS CONCRETAS
+// 4. FABRICAS CONCRETAS (Implementam a criação para cada família específica)
 class FabricaPayPal implements FabricaPagamento {
     public GatewayPagamento criarGateway() {
         return new GatewayPayPal();
@@ -61,9 +67,10 @@ class FabricaMercadoPago implements FabricaPagamento {
     }
 }
 
-// CLIENTE
+// 5. CLIENTE (Usa as fábricas sem se preocupar com as classes concretas)
 public class Ex1 {
     public static void finalizarCompra(FabricaPagamento fabrica, double valor) {
+        // O cliente trabalha com as interfaces, não com implementações
         GatewayPagamento gateway = fabrica.criarGateway();
         Recibo recibo = fabrica.criarRecibo();
 
@@ -72,12 +79,11 @@ public class Ex1 {
     }
 
     public static void main(String[] args) {
+        // Executando com a família PayPal
         finalizarCompra(new FabricaPayPal(), 100.99);
         System.out.println("*************************");
+        
+        // Executando com a família Mercado Pago
         finalizarCompra(new FabricaMercadoPago(), 3100.99);
-        System.out.println("*************************");
-        finalizarCompra(new FabricaPayPal(), 180.99);
-        System.out.println("*************************");
-        finalizarCompra(new FabricaMercadoPago(), 1008.99);
     }
 }
