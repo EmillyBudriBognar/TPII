@@ -1,55 +1,63 @@
-// PRODUTO ABSTRATO
+/**
+ * PADRÃO: FACTORY METHOD (MÉTODO FÁBRICA)
+ * 
+ * Exercício: Sistema de Logging.
+ * O objetivo é permitir que o sistema registre mensagens (Logs) 
+ * sem saber para onde essas mensagens estão sendo enviadas (Console, Arquivo, etc).
+ */
+
+// 1. PRODUTO ABSTRATO
 interface Logger {
     void log(String mensagem);
 }
 
-// PRODUTOS CONCRETOS
+// 2. PRODUTOS CONCRETOS
 class ConsoleLogger implements Logger {
-    @Override
     public void log(String mensagem) {
-        System.out.println("[CONSOLE] " + mensagem);
+        System.out.println("[CONSOLE LOG]: " + mensagem);
     }
 }
 
-class ArquivoLogger implements Logger {
-    @Override
+class FileLogger implements Logger {
     public void log(String mensagem) {
-        System.out.println("[ARQUIVO.txt] " + mensagem);
+        System.out.println("[ARQUIVO LOG]: Gravando no arquivo log.txt -> " + mensagem);
     }
 }
 
-// FABRICA ABSTRATA
-abstract class FabricaLog {
-    public abstract Logger criarLogger();
+// 3. CRIADOR ABSTRATO (Define o Factory Method)
+abstract class LogManager {
+    // Este é o Factory Method
+    public abstract Logger createLogger();
 
-    public void registrarLog(String mensagem) {
-        Logger logger = criarLogger();
+    // Método que utiliza o produto criado pelo Factory Method
+    public void registrar(String mensagem) {
+        Logger logger = createLogger();
         logger.log(mensagem);
     }
 }
 
-// FABRICAS CONCRETAS
-class FabricaConsoleLog extends FabricaLog {
+// 4. CRIADORES CONCRETOS
+class ConsoleLogManager extends LogManager {
     @Override
-    public Logger criarLogger() {
+    public Logger createLogger() {
         return new ConsoleLogger();
     }
 }
 
-class FabricaArquivoLog extends FabricaLog {
+class FileLogManager extends LogManager {
     @Override
-    public Logger criarLogger() {
-        return new ArquivoLogger();
+    public Logger createLogger() {
+        return new FileLogger();
     }
 }
 
-// CLIENTE
+// 5. CLIENTE
 public class Ex1 {
     public static void main(String[] args) {
-        FabricaLog loggerConsole = new FabricaConsoleLog();
-        loggerConsole.registrarLog("Sistema iniciado.");
+        LogManager console = new ConsoleLogManager();
+        console.registrar("Sistema iniciado com sucesso.");
 
-        FabricaLog loggerArquivo = new FabricaArquivoLog();
-        loggerArquivo.registrarLog("Erro de conexão detectado.");
+        LogManager arquivo = new FileLogManager();
+        arquivo.registrar("Erro detectado na linha 42.");
     }
 }

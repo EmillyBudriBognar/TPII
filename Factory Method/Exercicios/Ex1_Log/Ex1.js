@@ -1,47 +1,49 @@
+/**
+ * PADRÃO: FACTORY METHOD (MÉTODO FÁBRICA)
+ * 
+ * Exercício: Sistema de Logging.
+ * O Factory Method permite que a classe base 'LogManager' delegue a 
+ * criação de loggers específicos para suas subclasses, permitindo que o 
+ * sistema suporte novos locais de log sem alterar o código principal.
+ */
+
+// 1. PRODUTO (Base/Interface)
 class Logger {
-    log(mensagem) {
-        throw new Error("Método abstrato!");
-    }
+    log(mensagem) { throw new Error("Método abstrato log()"); }
 }
 
+// 2. PRODUTOS CONCRETOS
 class ConsoleLogger extends Logger {
-    log(mensagem) {
-        console.log(`[CONSOLE] ${mensagem}`);
-    }
+    log(mensagem) { console.log(`[CONSOLE LOG]: ${mensagem}`); }
 }
 
-class ArquivoLogger extends Logger {
-    log(mensagem) {
-        console.log(`[ARQUIVO.txt] ${mensagem}`);
-    }
+class FileLogger extends Logger {
+    log(mensagem) { console.log(`[ARQUIVO LOG]: Simulação de gravação em arquivo -> ${mensagem}`); }
 }
 
-class FabricaLog {
-    criarLogger() {
-        throw new Error("Método abstrato!");
-    }
+// 3. CRIADOR ABSTRATO (Base)
+class LogManager {
+    // Factory Method
+    createLogger() { throw new Error("Este método deve ser sobrescrito."); }
 
-    registrarLog(mensagem) {
-        const logger = this.criarLogger();
+    registrar(mensagem) {
+        const logger = this.createLogger();
         logger.log(mensagem);
     }
 }
 
-class FabricaConsoleLog extends FabricaLog {
-    criarLogger() {
-        return new ConsoleLogger();
-    }
+// 4. CRIADORES CONCRETOS
+class ConsoleLogManager extends LogManager {
+    createLogger() { return new ConsoleLogger(); }
 }
 
-class FabricaArquivoLog extends FabricaLog {
-    criarLogger() {
-        return new ArquivoLogger();
-    }
+class FileLogManager extends LogManager {
+    createLogger() { return new FileLogger(); }
 }
 
-// CLIENTE
-const loggerConsole = new FabricaConsoleLog();
-loggerConsole.registrarLog("Sistema iniciado.");
+// 5. CLIENTE
+const consoleLog = new ConsoleLogManager();
+consoleLog.registrar("Usuário f81d logado no sistema.");
 
-const loggerArquivo = new FabricaArquivoLog();
-loggerArquivo.registrarLog("Erro de conexão detectado.");
+const fileLog = new FileLogManager();
+fileLog.registrar("Acesso negado em /admin na rota POST.");

@@ -1,30 +1,50 @@
-# CLASSE DE DADO
-class Nome:
-    def __init__(self, nome, sobrenome):
-        self.nome = nome
-        self.sobrenome = sobrenome
+"""
+PADRÃO: FACTORY METHOD (MÉTODO FÁBRICA)
 
-    def __str__(self): return f"{self.nome} {self.sobrenome}"
+Este exemplo demonstra como esconder a complexidade da criação de objetos 
+(como o parsing de strings) atrás de um método fábrica.
+"""
 
-# FABRICA ABSTRATA
+from abc import ABC
+
+# 1. PRODUTO ABSTRATO
+class Nome(ABC):
+    def __init__(self):
+        self.nome = ""
+        self.sobrenome = ""
+
+    def __str__(self):
+        return f"Nome: {self.nome} | Sobrenome: {self.sobrenome}"
+
+# 2. PRODUTOS CONCRETOS
+class NomeSimples(Nome):
+    def __init__(self, s):
+        super().__init__()
+        self.nome = s
+
+class NomeSobrenome(Nome):
+    def __init__(self, s):
+        super().__init__()
+        if "," in s:
+            parts = s.split(",")
+            self.sobrenome = parts[0].strip()
+            self.nome = parts[1].strip()
+
+# 3. CRIADOR (Fábrica)
 class FabricaDeNomes:
-    def criar_nome(self, texto): pass
+    # Factory Method
+    def get_nome(self, s) -> Nome:
+        if "," in s:
+            return NomeSobrenome(s)
+        else:
+            return NomeSimples(s)
 
-# FABRICAS CONCRETAS
-class FabricaDeNomeSimples(FabricaDeNomes):
-    def criar_nome(self, texto):
-        nomes = texto.split(" ")
-        return Nome(nomes[0], nomes[1])
-
-class FabricaDeNomeComVirgula(FabricaDeNomes):
-    def criar_nome(self, texto):
-        nomes = texto.split(",")
-        return Nome(nomes[1].strip(), nomes[0].strip())
-
-# CLIENTE
+# 4. CLIENTE
 if __name__ == "__main__":
-    fabrica_simples = FabricaDeNomeSimples()
-    fabrica_virgula = FabricaDeNomeComVirgula()
+    fabrica = FabricaDeNomes()
 
-    print(fabrica_simples.criar_nome("Stela Montenegro"))
-    print(fabrica_virgula.criar_nome("Xavier, Lucas"))
+    n1 = fabrica.get_nome("Silvio Santos")
+    n2 = fabrica.get_nome("Lula, Luiz Inácio")
+
+    print(n1)
+    print(n2)

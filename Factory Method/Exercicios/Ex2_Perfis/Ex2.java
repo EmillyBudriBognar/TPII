@@ -1,96 +1,57 @@
-// classe base para perfil
-class Perfil {
-    private String tipo;
-    private String nome;
-    private int nivel;
+/**
+ * PADRÃO: FACTORY METHOD (MÉTODO FÁBRICA)
+ * 
+ * Exercício: Sistema de Perfis.
+ * Este exemplo mostra como as subclasses podem decidir o tipo de objeto 
+ * a ser criado (Perfil de Usuário ou Perfil de Administrador).
+ */
 
-    public Perfil(String tipo, String nome, int nivel) {
-        this.tipo = tipo;
-        this.nome = nome;
-        this.nivel = nivel;
+// 1. PRODUTO ABSTRATO
+interface Perfil {
+    String getPermissoes();
+}
+
+// 2. PRODUTOS CONCRETOS
+class PerfilUsuario implements Perfil {
+    public String getPermissoes() { return "Permissões de Usuário: Ler, Escrever comentário."; }
+}
+
+class PerfilAdmin implements Perfil {
+    public String getPermissoes() { return "Permissões de Admin: Ler, Escrever, Deletar, Bloquear usuário."; }
+}
+
+// 3. CRIADOR ABSTRATO (Fábrica)
+abstract class FabricaPerfil {
+    // Factory Method
+    public abstract Perfil criarPerfil();
+
+    // Método que utiliza o produto criado pelo Factory Method
+    public void mostrarPerfil() {
+        Perfil p = criarPerfil();
+        System.out.println("Status: " + p.getPermissoes());
     }
+}
 
+// 4. CRIADORES CONCRETOS
+class FabricaUsuario extends FabricaPerfil {
     @Override
-    public String toString() {
-        String retorno = "Nome: " + this.nome + " | Nível: " + this.tipo + " - " + this.nivel;
-        return retorno;
-    }
+    public Perfil criarPerfil() { return new PerfilUsuario(); }
 }
 
-// subclasses de perfil
-
-class Aluno extends Perfil {
-    public Aluno(String nome) {
-        super("Aluno", nome, 0);
-    }
+class FabricaAdmin extends FabricaPerfil {
+    @Override
+    public Perfil criarPerfil() { return new PerfilAdmin(); }
 }
 
-class Administrativo extends Perfil {
-    public Administrativo(String nome) {
-        super("Administrativo", nome, 1);
-    }
-}
-
-class Professor extends Perfil {
-    public Professor(String nome) {
-        super("Professor", nome, 2);
-    }
-}
-
-class Visitante extends Perfil {
-    public Visitante(String nome) {
-        super("Visitante", nome, 3);
-    }
-}
-
-// Fábrica abstrata
-
-abstract class FabricaDePerfis {
-    abstract public Perfil criarPerfil(String nome);
-}
-
-// Fábricas Concretas
-class FabricaDeAlunos extends FabricaDePerfis {
-    public Perfil criarPerfil(String nome) {
-        return new Aluno(nome);
-    }
-}
-
-class FabricaDeAdministrativos extends FabricaDePerfis {
-    public Perfil criarPerfil(String nome) {
-        return new Administrativo(nome);
-    }
-}
-
-class FabricaDeProfessores extends FabricaDePerfis {
-    public Perfil criarPerfil(String nome) {
-        return new Professor(nome);
-    }
-}
-
-class FabricaDeVisitantes extends FabricaDePerfis {
-    public Perfil criarPerfil(String nome) {
-        return new Visitante(nome);
-    }
-}
-
-// main
-public class Ex4 {
-    public static final FabricaDeAlunos FABRICA_DE_ALUNOS = new FabricaDeAlunos();
-    public static final FabricaDeAdministrativos FABRICA_DE_ADM = new FabricaDeAdministrativos();
-    public static final FabricaDeProfessores FABRICA_DE_PROFESSORES = new FabricaDeProfessores();
-    public static final FabricaDeVisitantes FABRICA_DE_VISITANTES = new FabricaDeVisitantes();
-
+// 5. CLIENTE
+public class Ex2 {
     public static void main(String[] args) {
+        System.out.println("Logando como Usuário Comum:");
+        FabricaPerfil f1 = new FabricaUsuario();
+        f1.mostrarPerfil();
 
-        Perfil perfil1 = FABRICA_DE_ALUNOS.criarPerfil("Stela");
-        Perfil perfil2 = FABRICA_DE_ADM.criarPerfil("Rita ");
-        Perfil perfil3 = FABRICA_DE_PROFESSORES.criarPerfil("Maria");
-        Perfil perfil4 = FABRICA_DE_VISITANTES.criarPerfil("Aline");
-
-        System.out.println(perfil1.toString());
-        System.out.println(perfil2.toString());
-        System.out.println(perfil3.toString());
-        System.out.println(perfil4.toString());
+        System.out.println("\nLogando como Administrador:");
+        FabricaPerfil f2 = new FabricaAdmin();
+        f2.mostrarPerfil();
     }
 }

@@ -1,40 +1,50 @@
-// PRODUTO ABSTRATO
+/**
+ * PADRÃO: FACTORY METHOD (MÉTODO FÁBRICA)
+ * 
+ * Exercício: Sistema de Perfis.
+ * O Factory Method é útil para abstrair os detalhes de permissões de 
+ * diferentes níveis de acesso no sistema.
+ */
+
+// 1. PRODUTO (Base)
 class Perfil {
-    constructor(tipo, nome, nivel) {
-        this.tipo = tipo;
-        this.nome = nome;
-        this.nivel = nivel;
-    }
+    getPermissoes() { throw new Error("Método abstrato"); }
+}
 
-    toString() {
-        return `Nome: ${this.nome} | Nível: ${this.tipo} - ${this.nivel}`;
+// 2. PRODUTOS CONCRETOS
+class PerfilUsuario extends Perfil {
+    getPermissoes() { return "Permissões de Usuário: Ler, Escrever comentário."; }
+}
+
+class PerfilAdmin extends Perfil {
+    getPermissoes() { return "Permissões de Admin: Ler, Escrever, Deletar, Bloquear usuário."; }
+}
+
+// 3. CRIADOR (Fábrica)
+class FabricaPerfil {
+    // Factory Method
+    criarPerfil() { throw new Error("Método abstrato"); }
+
+    mostrarPerfil() {
+        const p = this.criarPerfil();
+        console.log(`Status: ${p.getPermissoes()}`);
     }
 }
 
-// PRODUTOS CONCRETOS
-class Aluno extends Perfil { constructor(nome) { super("Aluno", nome, 0); } }
-class Administrativo extends Perfil { constructor(nome) { super("Administrativo", nome, 1); } }
-class Professor extends Perfil { constructor(nome) { super("Professor", nome, 2); } }
-class Visitante extends Perfil { constructor(nome) { super("Visitante", nome, 3); } }
-
-// FABRICA ABSTRATA
-class FabricaDePerfis {
-    criarPerfil(nome) { throw new Error("Método abstrato"); }
+// 4. CRIADORES CONCRETOS (Subclasses que decidem o tipo)
+class FabricaUsuario extends FabricaPerfil {
+    criarPerfil() { return new PerfilUsuario(); }
 }
 
-// FABRICAS CONCRETAS
-class FabricaDeAlunos extends FabricaDePerfis { criarPerfil(nome) { return new Aluno(nome); } }
-class FabricaDeAdministrativos extends FabricaDePerfis { criarPerfil(nome) { return new Administrativo(nome); } }
-class FabricaDeProfessores extends FabricaDePerfis { criarPerfil(nome) { return new Professor(nome); } }
-class FabricaDeVisitantes extends FabricaDePerfis { criarPerfil(nome) { return new Visitante(nome); } }
+class FabricaAdmin extends FabricaPerfil {
+    criarPerfil() { return new PerfilAdmin(); }
+}
 
-// CLIENTE
-const fabricaAlunos = new FabricaDeAlunos();
-const fabricaAdm = new FabricaDeAdministrativos();
-const fabricaProf = new FabricaDeProfessores();
-const fabricaVisitante = new FabricaDeVisitantes();
+// 5. CLIENTE
+console.log("Logando como Usuário Comum:");
+const f1 = new FabricaUsuario();
+f1.mostrarPerfil();
 
-console.log(fabricaAlunos.criarPerfil("Stela").toString());
-console.log(fabricaAdm.criarPerfil("Rita ").toString());
-console.log(fabricaProf.criarPerfil("Maria").toString());
-console.log(fabricaVisitante.criarPerfil("Aline").toString());
+console.log("\nLogando como Administrador:");
+const f2 = new FabricaAdmin();
+f2.mostrarPerfil();

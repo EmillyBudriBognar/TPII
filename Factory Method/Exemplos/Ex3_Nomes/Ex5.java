@@ -1,50 +1,62 @@
-class Nome {
-    private String nome;
-    private String sobrenome;
+/**
+ * PADRÃO: FACTORY METHOD (MÉTODO FÁBRICA)
+ * 
+ * Este exemplo mostra como o Factory Method pode ser usado para decidir 
+ * qual classe instanciar baseado no formato de uma string de entrada 
+ * (Nome Simples ou Nome Sobrenome).
+ */
 
-    public Nome(String nome, String sobrenome) {
-        this.nome = nome;
-        this.sobrenome = sobrenome;
-    }
+// 1. PRODUTO ABSTRATO
+abstract class Nome {
+    protected String nome;
+    protected String sobrenome;
 
     @Override
     public String toString() {
-        return nome + " " + sobrenome;
+        return "Nome: " + nome + " | Sobrenome: " + sobrenome;
     }
 }
 
-abstract class FabricaDeNomes {
-    public abstract Nome criarNome(String texto);
-}
-
-class FabricaDeNomeSimples extends FabricaDeNomes {
-    public Nome criarNome(String texto) {
-        String[] nomes = texto.split(" ");
-        return new Nome(nomes[0], nomes[1]);
+// 2. PRODUTOS CONCRETOS
+class NomeSimples extends Nome {
+    public NomeSimples(String s) {
+        nome = s;
+        sobrenome = "";
     }
 }
 
-class FabricaDeNomeComVirgula extends FabricaDeNomes {
-    public Nome criarNome(String texto) {
-        String[] nomes = texto.split(",");
-        return new Nome(nomes[1].trim(), nomes[0].trim());
+class NomeSobrenome extends Nome {
+    public NomeSobrenome(String s) {
+        int i = s.indexOf(",");
+        if (i != -1) {
+            sobrenome = s.substring(0, i).trim();
+            nome = s.substring(i + 1).trim();
+        }
     }
 }
 
+// 3. CRIADOR (Fábrica)
+class FabricaDeNomes {
+    // Factory Method (neste caso, é um método comum que escolhe o tipo)
+    public Nome getNome(String s) {
+        if (s.contains(",")) {
+            return new NomeSobrenome(s);
+        } else {
+            return new NomeSimples(s);
+        }
+    }
+}
+
+// 4. CLIENTE
 public class Ex5 {
     public static void main(String[] args) {
-        String nome1 = "Stela Montenegro";
-        String nome2 = "Xavier, Lucas";
+        FabricaDeNomes fabrica = new FabricaDeNomes();
 
-        FabricaDeNomes FABRICA_DE_NOME_SIMPLES = new FabricaDeNomeSimples();
-        FabricaDeNomes FABRICA_DE_NOME_COM_VIRGULA = new FabricaDeNomeComVirgula();
+        // Criando instâncias de 'Nome' sem conhecer as classes concretas
+        Nome n1 = fabrica.getNome("Silvio Santos");
+        Nome n2 = fabrica.getNome("Lula, Luiz Inácio");
 
-        Nome nomeComVirgula = FABRICA_DE_NOME_COM_VIRGULA.criarNome(nome2);
-        Nome nomeSimples = FABRICA_DE_NOME_SIMPLES.criarNome(nome1);
-
-        System.out.println(nomeSimples.toString());
-        System.out.println(nomeComVirgula.toString());
-
+        System.out.println(n1);
+        System.out.println(n2);
     }
-
 }

@@ -1,43 +1,53 @@
+"""
+PADRÃO: FACTORY METHOD (MÉTODO FÁBRICA)
+
+Exercício: Sistema de Logging.
+Este padrão é ideal para sistemas de Log onde a forma de registro 
+pode mudar dependendo do ambiente (Desenvolvimento vs Produção).
+"""
+
 from abc import ABC, abstractmethod
 
-# PRODUTO ABSTRATO
+# 1. PRODUTO ABSTRATO (Interface)
 class Logger(ABC):
     @abstractmethod
     def log(self, mensagem):
         pass
 
-# PRODUTOS CONCRETOS
+# 2. PRODUTOS CONCRETOS
 class ConsoleLogger(Logger):
     def log(self, mensagem):
-        print(f"[CONSOLE] {mensagem}")
+        print(f"[CONSOLE LOG]: {mensagem}")
 
-class ArquivoLogger(Logger):
+class FileLogger(Logger):
     def log(self, mensagem):
-        print(f"[ARQUIVO.txt] {mensagem}")
+        print(f"[ARQUIVO LOG]: Registrando no arquivo oculto -> {mensagem}")
 
-# FABRICA ABSTRATA
-class FabricaLog(ABC):
+# 3. CRIADOR (Classe Base)
+class LogManager(ABC):
     @abstractmethod
-    def criar_logger(self):
+    def create_logger(self) -> Logger:
+        """Este é o Factory Method."""
         pass
 
-    def registrar_log(self, mensagem):
-        logger = self.criar_logger()
+    def registrar(self, mensagem):
+        """Método que utiliza o Logger criado pela subclasse."""
+        logger = self.create_logger()
         logger.log(mensagem)
 
-# FABRICAS CONCRETAS
-class FabricaConsoleLog(FabricaLog):
-    def criar_logger(self):
+# 4. CRIADORES CONCRETOS (Fábricas)
+class ConsoleLogManager(LogManager):
+    def create_logger(self):
         return ConsoleLogger()
 
-class FabricaArquivoLog(FabricaLog):
-    def criar_logger(self):
-        return ArquivoLogger()
+class FileLogManager(LogManager):
+    def create_logger(self):
+        return FileLogger()
 
-# CLIENTE
+# 5. CLIENTE
 if __name__ == "__main__":
-    logger_console = FabricaConsoleLog()
-    logger_console.registrar_log("Sistema iniciado.")
+    c_log = ConsoleLogManager()
+    c_log.registrar("Otimização de consulta iniciada.")
 
-    logger_arquivo = FabricaArquivoLog()
-    logger_arquivo.registrar_log("Erro de conexão detectado.")
+    f_log = FileLogManager()
+    f_log.registrar("Aviso: Baixa memória disponível no servidor.")

@@ -1,51 +1,55 @@
-# PRODUTO ABSTRATO
-class Perfil:
-    def __init__(self, tipo, nome, nivel):
-        self.tipo = tipo
-        self.nome = nome
-        self.nivel = nivel
+"""
+PADRÃO: FACTORY METHOD (MÉTODO FÁBRICA)
 
-    def __str__(self):
-        return f"Nome: {self.nome} | Nível: {self.tipo} - {self.nivel}"
+Exercício: Sistema de Perfis.
+Este padrão é especialmente poderoso em Python para gerenciar 
+famílias de permissões de forma limpa e extensível.
+"""
 
-# PRODUTOS CONCRETOS
-class Aluno(Perfil):
-    def __init__(self, nome): super().__init__("Aluno", nome, 0)
+from abc import ABC, abstractmethod
 
-class Administrativo(Perfil):
-    def __init__(self, nome): super().__init__("Administrativo", nome, 1)
+# 1. PRODUTO ABSTRATO (Interface)
+class Perfil(ABC):
+    @abstractmethod
+    def get_permissoes(self):
+        pass
 
-class Professor(Perfil):
-    def __init__(self, nome): super().__init__("Professor", nome, 2)
+# 2. PRODUTOS CONCRETOS
+class PerfilUsuario(Perfil):
+    def get_permissoes(self):
+        return "Permissões de Usuário: Ler, Escrever comentário."
 
-class Visitante(Perfil):
-    def __init__(self, nome): super().__init__("Visitante", nome, 3)
+class PerfilAdmin(Perfil):
+    def get_permissoes(self):
+        return "Permissões de Admin: Ler, Escrever, Deletar, Bloquear usuário."
 
-# FABRICA ABSTRATA
-class FabricaDePerfis:
-    def criar_perfil(self, nome): pass
+# 3. CRIADOR (Fábrica)
+class FabricaPerfil(ABC):
+    @abstractmethod
+    def criar_perfil(self) -> Perfil:
+        """Este é o Factory Method."""
+        pass
 
-# FABRICAS CONCRETAS
-class FabricaDeAlunos(FabricaDePerfis):
-    def criar_perfil(self, nome): return Aluno(nome)
+    def mostrar_perfil(self):
+        """Método que utiliza o produto criado pela subclasse."""
+        p = self.criar_perfil()
+        print(f"Status: {p.get_permissoes()}")
 
-class FabricaDeAdministrativos(FabricaDePerfis):
-    def criar_perfil(self, nome): return Administrativo(nome)
+# 4. CRIADORES CONCRETOS
+class FabricaUsuario(FabricaPerfil):
+    def criar_perfil(self):
+        return PerfilUsuario()
 
-class FabricaDeProfessores(FabricaDePerfis):
-    def criar_perfil(self, nome): return Professor(nome)
+class FabricaAdmin(FabricaPerfil):
+    def criar_perfil(self):
+        return PerfilAdmin()
 
-class FabricaDeVisitantes(FabricaDePerfis):
-    def criar_perfil(self, nome): return Visitante(nome)
-
-# CLIENTE
+# 5. CLIENTE
 if __name__ == "__main__":
-    fabrica_alunos = FabricaDeAlunos()
-    fabrica_adm = FabricaDeAdministrativos()
-    fabrica_prof = FabricaDeProfessores()
-    fabrica_visitante = FabricaDeVisitantes()
+    print("Logando como Usuário Comum:")
+    f1 = FabricaUsuario()
+    f1.mostrar_perfil()
 
-    print(fabrica_alunos.criar_perfil("Stela"))
-    print(fabrica_adm.criar_perfil("Rita "))
-    print(fabrica_prof.criar_perfil("Maria"))
-    print(fabrica_visitante.criar_perfil("Aline"))
+    print("\nLogando como Administrador:")
+    f2 = FabricaAdmin()
+    f2.mostrar_perfil()
