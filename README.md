@@ -7,16 +7,27 @@ Este projeto demonstra a implementação de padrões de projeto criacionais em *
 
 ## 🏗️ Estrutura do Projeto
 
-O projeto está organizado por padrões de projeto, cada um contendo exemplos práticos e exercícios sugeridos.
+O projeto está organizado por padrões de projeto criacionais, cada um contendo exemplos práticos e exercícios sugeridos.
 
-### 1. [Abstract Factory](./Abstract%20Factory/)
-Focado na criação de famílias de objetos relacionados.
+### 🏗️ Estrutura de Pastas
+- [Abstract Factory](./Abstract%20Factory/) - Famílias de objetos relacionados.
+- [Factory Method](./Factory%20Method/) - Instanciação delegada a subclasses.
+- [Builder](./Builder/) - Construção passo a passo de objetos complexos.
+- [Prototype](./Prototype/) - Clonagem de objetos a partir de um protótipo.
+- [Singleton](./Singleton/) - Instância única global.
 
-### 2. [Factory Method](./Factory%20Method/)
-Define uma interface para criar um objeto, mas deixa as subclasses decidirem qual classe instanciar.
+---
 
-### 3. [Builder](./Builder/)
-Separa a construção de um objeto complexo da sua representação.
+## 📌 ATIVIDADES
+
+Conforme o cronograma da disciplina:
+
+- **Atividade 06/03/26**: `Abstract Factory / Exercícios`
+    - Contém as implementações: `Ex1_Transporte`, `Ex2_Loja`, `Ex3_Plataforma` e `Ex4_Robos`.
+- **Atividade 20/03/26**: `Builder / Exercícios`, `Prototype` e `Singleton`
+    - `Builder / Exercícios`: `Ex2_Perfis`.
+    - `Prototype / Exemplos`.
+    - `Singleton / Exemplos` e `Exercícios`.
 
 ---
 
